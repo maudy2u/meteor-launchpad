@@ -80,8 +80,8 @@ NODE_VERSION=8.9.0
 
 # Installs the latest version of each (default: all false)
 INSTALL_MONGO=true
-INSTALL_PHANTOMJS=true
-INSTALL_GRAPHICSMAGICK=true
+INSTALL_PHANTOMJS=false
+INSTALL_GRAPHICSMAGICK=false
 ```
 
 **Option #2 - Docker Build Args**

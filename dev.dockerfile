@@ -1,4 +1,5 @@
-FROM debian:jessie
+FROM ubuntu:bionic
+
 MAINTAINER Jeremy Shimko <jeremy.shimko@gmail.com>
 
 RUN groupadd -r node && useradd -m -g node node
@@ -9,16 +10,13 @@ ENV DEV_BUILD true
 ENV GOSU_VERSION 1.10
 
 # MongoDB
-ENV MONGO_VERSION 3.4.10
-ENV MONGO_MAJOR 3.4
-ENV MONGO_PACKAGE mongodb-org
-
-# PhantomJS
-ENV PHANTOM_VERSION 2.1.1
+ENV MONGO_VERSION 4.4.0
+ENV MONGO_MAJOR 4.4
 
 # build directories
 ENV APP_SOURCE_DIR /opt/meteor/src
-ENV APP_BUNDLE_DIR /opt/meteor/dist
+ENV APP_DIST_DIR /opt/meteor/dist
+ENV APP_BUNDLE_DIR $APP_DIST_DIR/bundle
 ENV BUILD_SCRIPTS_DIR /opt/build_scripts
 
 # Add entrypoint and build scripts
@@ -41,18 +39,12 @@ ONBUILD ENV INSTALL_MONGO ${INSTALL_MONGO:-true}
 
 ONBUILD ARG INSTALL_PHANTOMJS
 ONBUILD ENV INSTALL_PHANTOMJS ${INSTALL_PHANTOMJS:-true}
-
-ONBUILD ARG INSTALL_GRAPHICSMAGICK
-ONBUILD ENV INSTALL_GRAPHICSMAGICK ${INSTALL_GRAPHICSMAGICK:-true}
-
 # optionally custom apt dependencies at app build time
 ONBUILD RUN if [ "$APT_GET_INSTALL" ]; then apt-get update && apt-get install -y $APT_GET_INSTALL; fi
 
 # optionally install Mongo or Phantom at app build time
 ONBUILD RUN bash $BUILD_SCRIPTS_DIR/install-phantom.sh
 ONBUILD RUN bash $BUILD_SCRIPTS_DIR/install-mongo.sh
-ONBUILD RUN bash $BUILD_SCRIPTS_DIR/install-graphicsmagick.sh
-
 # Node flags for the Meteor build tool
 ONBUILD ARG TOOL_NODE_FLAGS
 ONBUILD ENV TOOL_NODE_FLAGS $TOOL_NODE_FLAGS

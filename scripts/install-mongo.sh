@@ -7,26 +7,105 @@ if [ -f $APP_SOURCE_DIR/launchpad.conf ]; then
 fi
 
 if [ "$INSTALL_MONGO" = true ]; then
-  printf "\n[-] Installing MongoDB ${MONGO_VERSION}...\n\n"
+  # server: 'https://repo.mongodb.org/apt/ubuntu/dists/bionic/mongodb-org/4.4/multiverse/binary-amd64/mongodb-org-server_4.4.1_amd64.deb'
+  # shell:
 
-	apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 0C49F3730359A14518585931BC711F9BA15703C6
 
-  echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/$MONGO_MAJOR main" > /etc/apt/sources.list.d/mongodb-org.list
+  if [ "$(uname -m)" == "x86_64" ]; then
+    MONGO_ARCH=x86_64
+  elif [ "$(uname -m)" == "aarch64" ] || [ "$(uname -m)" == "arm64" ]; then
+    MONGO_ARCH=aarch64
+  elif [ "$(uname -p)" == "armv7l" ] || [ "$(uname -m)" == "armv7l" ]; then
+    MONGO_ARCH=armv7l
+  elif [ "$(uname -m)" == "i386" ]; then
+    MONGO_ARCH=i386
+  fi
 
-	apt-get update
+  if [ "$(uname -s)" == "Darwin" ] && [ "$(uname -m)" == "x86_64" ]; then
+    MONGO_DIR=osx
+    MONGO_OS=macos-x86_64
+    TOOLS_OS=macos-x86_64
+    TOOLS_EXT=zip
+  elif [ "$(uname -s)" == "Linux" ] && [ "$(uname -m)" == "x86_64" ]; then
+    MONGO_DIR=linux
+    MONGO_OS=linux-x86_64-ubuntu1804
+    TOOLS_OS=ubuntu1804-x86_64
+    TOOLS_EXT=tgz
+  elif [ "$(uname -s)" == "Linux" ] && [ "$(uname -m)" == "aarch64" ]; then
+    MONGO_DIR=linux
+    MONGO_OS=linux-aarch64-ubuntu1804
+    TOOLS_OS=ubuntu1804-arm64
+    TOOLS_EXT=tgz
+  fi
+  # server
 
-  apt-get install -y \
-    ${MONGO_PACKAGE}=$MONGO_VERSION \
-    ${MONGO_PACKAGE}-server=$MONGO_VERSION \
-    ${MONGO_PACKAGE}-shell=$MONGO_VERSION \
-    ${MONGO_PACKAGE}-mongos=$MONGO_VERSION \
-    ${MONGO_PACKAGE}-tools=$MONGO_VERSION
+  MONGO_DIST=mongodb-${MONGO_OS}-${MONGO_VERSION}
+  TOOLS=mongodb-database-tools-${TOOLS_OS}-100.2.1
+  MONGO_TOOLS=${TOOLS}.${TOOLS_EXT}
+# https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1804-4.4.1.tgz
+# https://fastdl.mongodb.org/osx/mongodb-macos-x86_64-4.4.1.tgz
+# https://fastdl.mongodb.org/osx/mongodb-macos-x86_64-${MONGO_VERSION}.tgz
+# https://fastdl.mongodb.org/${MONGO_DIR}/mongodb-${MONGO_OS}-${MONGO_VERSION}.tgz
 
-  mkdir -p /data/{db,configdb}
-  chown -R mongodb:mongodb /data/{db,configdb}
+# https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1804-x86_64-100.2.1.tgz
+# https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1804-x86_64-100.2.1.tgz
+# https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1804-arm64-100.2.1.tgz
+# https://fastdl.mongodb.org/tools/db/mongodb-database-tools-macos-x86_64-100.2.1.zip
+# https://fastdl.mongodb.org/tools/db/mongodb-database-tools-${MONGO_OS}-100.2.1.zip
+# https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1804-x86_64-100.2.1.tgz
+    #statements
+  printf "\n[-] Installing MongoDB ${MONGO_DIST}...\n\n"
 
-	rm -rf /var/lib/apt/lists/*
-	rm -rf /var/lib/mongodb
-  mv /etc/mongod.conf /etc/mongod.conf.orig
+  # https://docs.mongodb.com/master/tutorial/install-mongodb-on-ubuntu/
+#  apt-get install -y --no-install-recommends gnupg wget curl tzdata openssl
+#  apt-get install -y gnupg wget curl tzdata openssl
+#  apt-get install -y gnupg tzdata openssl
+  apt-get install -y libcurl4 openssl liblzma5
+
+  # export MONGO_ARCH=amd64
+  # export MONGO_VERSION=4.4.1
+  # export MONGO_MAJOR=4.4
+
+  # extras
+  cd /tmp
+  curl -L https://fastdl.mongodb.org/${MONGO_DIR}/${MONGO_DIST}.tgz \
+    -o server.tgz
+  #apt/ubuntu/dists/bionic/mongodb-org/${MONGO_MAJOR}/multiverse/binary-${MONGO_ARCH}/mongodb-org-database-tools-extra_${MONGO_VERSION}_${MONGO_ARCH}.deb \
+  tar zxvf server.tgz
+  rm server.tgz
+  rm -rf /opt/mongodb
+  mv ${MONGO_DIST} /opt/mongodb
+
+  ln -sf /opt/mongodb/bin/mongod /usr/bin/mongod
+  ln -sf /opt/mongodb/bin/mongo /usr/bin/mongo
+  ln -sf /opt/mongodb/bin/mongos /usr/bin/mongos
+  ln -sf /opt/mongodb/bin/install_compass /usr/bin/install_compass
+
+  printf "\n[-] Installing MongoDB Tools ${MONGO_TOOLS}...\n\n"
+  # printf "\n[-] https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS}\n\n"
+  # printf "\n[-] https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1804-x86_64-100.2.1.tgz\n\n"
+  cd /tmp
+
+  curl -L https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS} \
+   -o tools.zip
+  #apt/ubuntu/dists/bionic/mongodb-org/${MONGO_MAJOR}/multiverse/binary-${MONGO_ARCH}/mongodb-org-database-tools-extra_${MONGO_VERSION}_${MONGO_ARCH}.deb \
+  tar xvf tools.zip
+  rm tools.zip
+  rm -rf /opt/mongodb-database-tools
+  mv ${TOOLS} /opt/mongodb-database-tools
+
+  ln -sf /opt/mongodb-database-tools/bin/bsondump /usr/bin/bsondump
+  ln -sf /opt/mongodb-database-tools/bin/mongodump /usr/bin/mongodump
+  ln -sf /opt/mongodb-database-tools/bin/mongoexport /usr/bin/mongoexport
+  ln -sf /opt/mongodb-database-tools/bin/mongofiles /usr/bin/mongofiles
+  ln -sf /opt/mongodb-database-tools/bin/mongoimport /usr/bin/mongoimport
+  ln -sf /opt/mongodb-database-tools/bin/mongorestore /usr/bin/mongorestore
+  ln -sf /opt/mongodb-database-tools/bin/mongostat /usr/bin/mongostat
+  ln -sf /opt/mongodb-database-tools/bin/mongotop /usr/bin/mongotop
+
+  mkdir -p /var/lib/mongodb
+  # chown -R mongodb:mongodb /var/lib/mongodb
+  mkdir -p /var/log/mongodb
+  # chown -R mongodb:mongodb /var/log/mongodb
 
 fi

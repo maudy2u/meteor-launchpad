@@ -1,6 +1,16 @@
 #!/bin/bash
 set -e
 
+# run npm install in bundle
+printf "\n[-] Running npm installing FIBERS in the server bundle...\n\n"
+cd $APP_BUNDLE_DIR/programs/server
+printf  " *******************************"
+printf  " METEOR - fix for fibers deploy"
+printf  " *******************************"
+printf  ""
+meteor npm uninstall fibers
+meteor npm install fibers
+
 printf "\n[-] Performing final cleanup...\n\n"
 
 # get out of the src dir, so we can delete it
@@ -18,6 +28,8 @@ rm -rf $APP_SOURCE_DIR
 # remove meteor
 rm -rf /usr/local/bin/meteor
 rm -rf /root/.meteor
+# needed for armfh
+rm -rf /root/meteor
 
 # clean additional files created outside the source tree
 rm -rf /root/{.npm,.cache,.config,.cordova,.local}

@@ -3,10 +3,14 @@
 set -e
 
 # try to start local MongoDB if no external MONGO_URL was set
-if [[ "${MONGO_URL}" == *"127.0.0.1"* ]]; then
+if [[ "${MONGO_URL}" == *"127.0.0.1"* ] || [ "${MONGO_URL}" == *"localhost"* ]]; then
   if hash mongod 2>/dev/null; then
+    printf " *******************************"
     printf "\n[-] External MONGO_URL not found. Starting local MongoDB...\n\n"
-    exec gosu mongodb mongod --storageEngine=wiredTiger > /dev/null 2>&1 &
+    #exec gosu mongodb mongod --storageEngine=wiredTiger > /dev/null 2>&1 &
+    printf " *******************************"
+    printf ""
+    mongod --dbpath /var/lib/mongodb --logpath /var/log/mongodb/mongod.log --journal &
   else
     echo "ERROR: Mongo not installed inside the container."
     echo "Rebuild with INSTALL_MONGO=true in your launchpad.conf or supply a MONGO_URL environment variable."

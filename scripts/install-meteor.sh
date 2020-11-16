@@ -9,19 +9,21 @@ if [ "$DEV_BUILD" = true ]; then
   curl -v https://install.meteor.com/ | sh
 else
   # download installer script
-  curl -v https://install.meteor.com -o /tmp/install_meteor.sh
-
-  # read in the release version in the app
-  METEOR_VERSION=$(head $APP_SOURCE_DIR/.meteor/release | cut -d "@" -f 2)
-
-  # set the release version in the install script
-  sed -i.bak "s/RELEASE=.*/RELEASE=\"$METEOR_VERSION\"/g" /tmp/install_meteor.sh
-
-  # replace tar command with bsdtar in the install script (bsdtar -xf "$TARBALL_FILE" -C "$INSTALL_TMPDIR")
-  # https://github.com/jshimko/meteor-launchpad/issues/39
-  sed -i.bak "s/tar -xzf.*/bsdtar -xf \"\$TARBALL_FILE\" -C \"\$INSTALL_TMPDIR\"/g" /tmp/install_meteor.sh
-
-  # install
+  printf "\n[-] *******************************\n\n"
   printf "\n[-] Installing Meteor $METEOR_VERSION...\n\n"
-  sh /tmp/install_meteor.sh
+  printf "\n[-] *******************************\n\n"
+  if [ "$(uname -m)" == "armv7l" ] || [ "$(uname -p)" == "armv7l" ]; then
+    cd ~
+    git clone --depth 1 https://github.com/4commerce-technologies-AG/meteor.git
+    cd meteor
+    ln -sf ./meteor /usr/bin/meteor
+  elif [ "$(uname -m)" == "aarch64" ] || [ "$(uname -m)" == "arm64" ]; then
+    cd ~
+    git clone --depth 1 --branch release-1.4-universal-beta https://github.com/4commerce-technologies-AG/meteor.git
+    cd meteor
+    ln -sf ./meteor /usr/bin/meteor
+  else
+    curl "https://install.meteor.com/?release=1.8.1" | sh
+  fi
+
 fi
