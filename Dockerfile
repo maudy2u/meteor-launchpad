@@ -71,5 +71,5 @@ EXPOSE 3000
 WORKDIR $APP_BUNDLE_DIR
 
 # start the app
-#ENTRYPOINT ["./entrypoint.sh"]
-#CMD ["node", "main.js"]
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["node", "main.js"]
