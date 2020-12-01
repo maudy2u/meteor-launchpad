@@ -1,14 +1,14 @@
+# FROM node:4
 FROM ubuntu:bionic
 MAINTAINER Stephen <abordercollie@gmail.com>
 
 RUN groupadd -r node && useradd -m -g node node
 
-# Gosu
-ENV GOSU_VERSION 1.10
+# Meteor
+ENV METEOR_DISABLE_OPTIMISTIC_CACHING=1
 
 # MongoDB
-ENV MONGO_VERSION 4.4.1
-ENV MONGO_MAJOR 4.4
+ENV MONGO_VERSION 4.0.5
 
 # NodeJS
 ENV NODE_VERSION 8.11.1
@@ -18,6 +18,9 @@ ENV APP_SOURCE_DIR /opt/meteor/src
 ENV APP_DIST_DIR /opt/meteor/dist
 ENV APP_BUNDLE_DIR $APP_DIST_DIR/bundle
 ENV BUILD_SCRIPTS_DIR /opt/build_scripts
+
+# PATH revisions
+ENV PATH=$APP_DIST_DIR/mongodb/bin:$APP_DIST_DIR/nodejs/bin:$PATH
 
 # Add entrypoint and build scripts
 COPY scripts $BUILD_SCRIPTS_DIR
@@ -33,7 +36,7 @@ ONBUILD ARG TZ
 ONBUILD ENV TZ $TZ
 
 ONBUILD ARG NODE_VERSION
-ONBUILD ENV NODE_VERSION ${NODE_VERSION:-8.9.0}
+ONBUILD ENV NODE_VERSION ${NODE_VERSION:-8.11.1}
 
 ONBUILD ARG NPM_TOKEN
 ONBUILD ENV NPM_TOKEN $NPM_TOKEN
@@ -54,22 +57,26 @@ ONBUILD COPY . $APP_SOURCE_DIR
 # install all dependencies, build app, clean up
 ONBUILD RUN cd $APP_SOURCE_DIR && \
   $BUILD_SCRIPTS_DIR/install-deps.sh && \
-  $BUILD_SCRIPTS_DIR/install-node.sh && \
-#  $BUILD_SCRIPTS_DIR/install-mongo.sh
   $BUILD_SCRIPTS_DIR/install-mongo.sh && \
+  $BUILD_SCRIPTS_DIR/install-node.sh && \
   $BUILD_SCRIPTS_DIR/install-meteor.sh && \
+  $BUILD_SCRIPTS_DIR/install-meteor-deps.sh && \
   $BUILD_SCRIPTS_DIR/build-meteor.sh && \
   $BUILD_SCRIPTS_DIR/post-build-cleanup.sh
+#  $BUILD_SCRIPTS_DIR/post-install-cleanup.sh
 
 # Default values for Meteor environment variables
 ENV ROOT_URL http://localhost
-ENV MONGO_URL mongodb://127.0.0.1:27017/meteor
+ENV MONGO_URL mongodb://localhost:27017/meteor
 ENV PORT 3000
 
 EXPOSE 3000
 
+# CMD needs bundle directoy...
 WORKDIR $APP_BUNDLE_DIR
 
+VOLUME ["/var/tsx_cmd", "/var/log/tsx_cmd"]
+
 # start the app
-ENTRYPOINT ["./entrypoint.sh"]
-CMD ["node", "main.js"]
+# ENTRYPOINT ["./entrypoint.sh"]
+# CMD ["node", "main.js"]

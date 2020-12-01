@@ -60,52 +60,50 @@ if [ "$INSTALL_MONGO" = true ]; then
 #  apt-get install -y --no-install-recommends gnupg wget curl tzdata openssl
 #  apt-get install -y gnupg wget curl tzdata openssl
 #  apt-get install -y gnupg tzdata openssl
-  apt-get install -y libcurl4 openssl liblzma5
+  apt-get install -y openssl liblzma5
+  # apt-get install -y libcurl4 openssl liblzma5
 
   # export MONGO_ARCH=amd64
   # export MONGO_VERSION=4.4.1
   # export MONGO_MAJOR=4.4
 
   # extras
-  cd /tmp
+  export MONGO_PARAMS="-C ./mongodb  --strip-components=1"
+  cd ${APP_DIST_DIR}
+  printf "\n[-] Mongodb - Download and extract ${MONGO}...\n\n"
+  mkdir -p ./mongodb/bin
   curl -L https://fastdl.mongodb.org/${MONGO_DIR}/${MONGO_DIST}.tgz \
-    -o server.tgz
-  #apt/ubuntu/dists/bionic/mongodb-org/${MONGO_MAJOR}/multiverse/binary-${MONGO_ARCH}/mongodb-org-database-tools-extra_${MONGO_VERSION}_${MONGO_ARCH}.deb \
-  tar zxvf server.tgz
-  rm server.tgz
-  rm -rf /opt/mongodb
-  mv ${MONGO_DIST} /opt/mongodb
+    -o mongodb.tgz
+  tar -xf mongodb.tgz ${MONGO_PARAMS}
+  rm ${APP_DIST_DIR}/mongodb.tgz
 
-  ln -sf /opt/mongodb/bin/mongod /usr/bin/mongod
-  ln -sf /opt/mongodb/bin/mongo /usr/bin/mongo
-  ln -sf /opt/mongodb/bin/mongos /usr/bin/mongos
-  ln -sf /opt/mongodb/bin/install_compass /usr/bin/install_compass
+  # ln -sf /opt/mongodb/bin/mongod /usr/bin/mongod
+  # ln -sf /opt/mongodb/bin/mongo /usr/bin/mongo
+  # ln -sf /opt/mongodb/bin/mongos /usr/bin/mongos
+  # ln -sf /opt/mongodb/bin/install_compass /usr/bin/install_compass
 
-  printf "\n[-] Installing MongoDB Tools ${MONGO_TOOLS}...\n\n"
-  # printf "\n[-] https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS}\n\n"
-  # printf "\n[-] https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1804-x86_64-100.2.1.tgz\n\n"
-  cd /tmp
+  # printf "\n[-] Installing MongoDB Tools ${MONGO_TOOLS}...\n\n"
+  # # printf "\n[-] https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS}\n\n"
+  # # printf "\n[-] https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1804-x86_64-100.2.1.tgz\n\n"
+  # cd /tmp
+  #
+  # curl -L https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS} \
+  #  -o tools.zip
+  # #apt/ubuntu/dists/bionic/mongodb-org/${MONGO_MAJOR}/multiverse/binary-${MONGO_ARCH}/mongodb-org-database-tools-extra_${MONGO_VERSION}_${MONGO_ARCH}.deb \
+  # tar xvf tools.zip
+  # rm tools.zip
+  # rm -rf /opt/mongodb-database-tools
+  # mv ${TOOLS} /opt/mongodb-database-tools
 
-  curl -L https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS} \
-   -o tools.zip
-  #apt/ubuntu/dists/bionic/mongodb-org/${MONGO_MAJOR}/multiverse/binary-${MONGO_ARCH}/mongodb-org-database-tools-extra_${MONGO_VERSION}_${MONGO_ARCH}.deb \
-  tar xvf tools.zip
-  rm tools.zip
-  rm -rf /opt/mongodb-database-tools
-  mv ${TOOLS} /opt/mongodb-database-tools
-
-  ln -sf /opt/mongodb-database-tools/bin/bsondump /usr/bin/bsondump
-  ln -sf /opt/mongodb-database-tools/bin/mongodump /usr/bin/mongodump
-  ln -sf /opt/mongodb-database-tools/bin/mongoexport /usr/bin/mongoexport
-  ln -sf /opt/mongodb-database-tools/bin/mongofiles /usr/bin/mongofiles
-  ln -sf /opt/mongodb-database-tools/bin/mongoimport /usr/bin/mongoimport
-  ln -sf /opt/mongodb-database-tools/bin/mongorestore /usr/bin/mongorestore
-  ln -sf /opt/mongodb-database-tools/bin/mongostat /usr/bin/mongostat
-  ln -sf /opt/mongodb-database-tools/bin/mongotop /usr/bin/mongotop
+  # ln -sf /opt/mongodb-database-tools/bin/bsondump /usr/bin/bsondump
+  # ln -sf /opt/mongodb-database-tools/bin/mongodump /usr/bin/mongodump
+  # ln -sf /opt/mongodb-database-tools/bin/mongoexport /usr/bin/mongoexport
+  # ln -sf /opt/mongodb-database-tools/bin/mongofiles /usr/bin/mongofiles
+  # ln -sf /opt/mongodb-database-tools/bin/mongoimport /usr/bin/mongoimport
+  # ln -sf /opt/mongodb-database-tools/bin/mongorestore /usr/bin/mongorestore
+  # ln -sf /opt/mongodb-database-tools/bin/mongostat /usr/bin/mongostat
+  # ln -sf /opt/mongodb-database-tools/bin/mongotop /usr/bin/mongotop
 
   mkdir -p /var/lib/mongodb
   # chown -R mongodb:mongodb /var/lib/mongodb
-  mkdir -p /var/log/mongodb
-  # chown -R mongodb:mongodb /var/log/mongodb
-
 fi
