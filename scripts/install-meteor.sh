@@ -28,6 +28,13 @@ else
     cd ~
     git clone --depth 1 --branch release-1.4-universal-beta https://github.com/4commerce-technologies-AG/meteor.git
     ln -sf ~/meteor/meteor /usr/bin/meteor
+
+    # checking for
+    mv /root/meteor/dev_bundle/mongodb/bin/mongod /root/meteor/dev_bundle/mongodb/bin/mongod.hide
+    mv /root/meteor/dev_bundle/mongodb/bin/mongo /root/meteor/dev_bundle/mongodb/bin/mongo.hide
+    ln -sf /opt/meteor/dist/mongodb/bin/mongod /root/meteor/dev_bundle/mongodb/bin/mongod
+    ln -sf /opt/meteor/dist/mongodb/bin/mongo /root/meteor/dev_bundle/mongodb/bin/mongo
+
   else
     printf "\n[-] Installing Meteor $METEOR_VERSION...\n\n"
     printf "\n[-] *******************************\n\n"

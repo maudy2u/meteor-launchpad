@@ -16,7 +16,7 @@ if [ -f $APP_SOURCE_DIR/launchpad.conf ]; then
   source <(grep APT_GET_INSTALL $APP_SOURCE_DIR/launchpad.conf)
   source <(grep TZ $APP_SOURCE_DIR/launchpad.conf)
 
-  if [ "$APT_GET_INSTALL" ]; then
+  if [ "${APT_GET_INSTALL}" ]; then
     printf "\n[-] Installing custom apt dependencies...\n\n"
     apt-get install -y $APT_GET_INSTALL
   fi
@@ -26,7 +26,7 @@ if [ -f $APP_SOURCE_DIR/launchpad.conf ]; then
   ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 fi
 
-apt-get install -y --no-install-recommends curl tzdata jq curl wget bzip2 bsdtar build-essential python gnupg
+apt-get install -y --no-install-recommends curl tzdata jq wget bzip2 bsdtar build-essential python gnupg
 
 
 # install gosu

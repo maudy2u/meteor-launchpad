@@ -7,11 +7,10 @@ RUN groupadd -r node && useradd -m -g node node
 ENV DEV_BUILD true
 
 # Gosu
-ENV GOSU_VERSION 1.10
+# ENV GOSU_VERSION 1.10
 
 # MongoDB
 ENV MONGO_VERSION 4.4.0
-ENV MONGO_MAJOR 4.4
 
 # build directories
 ENV APP_SOURCE_DIR /opt/meteor/src

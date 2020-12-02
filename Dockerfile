@@ -8,7 +8,7 @@ RUN groupadd -r node && useradd -m -g node node
 ENV METEOR_DISABLE_OPTIMISTIC_CACHING=1
 
 # MongoDB
-ENV MONGO_VERSION 4.0.5
+ENV MONGO_VERSION 4.4.2
 
 # NodeJS
 ENV NODE_VERSION 8.11.1
