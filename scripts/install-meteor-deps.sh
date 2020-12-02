@@ -58,3 +58,12 @@ if [ "$METEOR_NPM_SAVE" ]; then
 fi
 printf "\n[-] Running meteor npm install in app directory...\n\n"
 meteor npm install
+
+if [ "$(uname -m)" == "aarch64" ] || [ "$(uname -m)" == "arm64" ]; then
+  printf "\n[-] aarch64 patching meteor's mongod ...\n\n"
+  # checking for
+  mv /root/meteor/dev_bundle/mongodb/bin/mongod /root/meteor/dev_bundle/mongodb/bin/mongod.hide
+  mv /root/meteor/dev_bundle/mongodb/bin/mongo /root/meteor/dev_bundle/mongodb/bin/mongo.hide
+  ln -sf /opt/meteor/dist/mongodb/bin/mongod /root/meteor/dev_bundle/mongodb/bin/mongod
+  ln -sf /opt/meteor/dist/mongodb/bin/mongo /root/meteor/dev_bundle/mongodb/bin/mongo
+fi

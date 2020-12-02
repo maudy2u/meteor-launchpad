@@ -11,6 +11,8 @@ if [[ "${MONGO_URL}" == *"127.0.0.1"* ]] || [[ "${MONGO_URL}" == *"localhost"* ]
     #exec gosu mongodb mongod --storageEngine=wiredTiger > /dev/null 2>&1 &
     echo " *******************************"
     echo ""
+    mkdir -p /var/lib/mongodb
+    mkdir -p /var/log/mongodb
     mongod --dbpath /var/lib/mongodb --logpath /var/log/mongodb/mongod.log --journal &
   else
     echo "ERROR: Mongo not installed inside the container."

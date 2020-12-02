@@ -62,8 +62,8 @@ ONBUILD RUN cd $APP_SOURCE_DIR && \
   $BUILD_SCRIPTS_DIR/install-meteor.sh && \
   $BUILD_SCRIPTS_DIR/install-meteor-deps.sh && \
   $BUILD_SCRIPTS_DIR/build-meteor.sh && \
-  $BUILD_SCRIPTS_DIR/post-build-cleanup.sh
-#  $BUILD_SCRIPTS_DIR/post-install-cleanup.sh
+  $BUILD_SCRIPTS_DIR/post-build-cleanup.sh && \
+  $BUILD_SCRIPTS_DIR/post-install-cleanup.sh
 
 # Default values for Meteor environment variables
 ENV ROOT_URL http://localhost
@@ -78,5 +78,5 @@ WORKDIR $APP_BUNDLE_DIR
 VOLUME ["/var/tsx_cmd", "/var/log/tsx_cmd"]
 
 # start the app
-# ENTRYPOINT ["./entrypoint.sh"]
-# CMD ["node", "main.js"]
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["node", "main.js"]
