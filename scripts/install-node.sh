@@ -30,7 +30,7 @@ NODE_DIST=node-v${NODE_VERSION}-${NODE_OS}-${NODE_ARCH}
 cd ${APP_DIST_DIR}
 mkdir -p ./nodejs
 printf "\n[-] Nodejs - Download and extract ${NODE_VERSION}...\n\n"
-curl -L http://nodejs.org/dist/v${NODE_VERSION}/${NODE_DIST}.tar.gz \
+curl -sL http://nodejs.org/dist/v${NODE_VERSION}/${NODE_DIST}.tar.gz \
   -o nodejs.tar.gz
 # tar xzf ${NODE_DIST}.tar.gz
 tar -xf nodejs.tar.gz -C ./nodejs --strip-components=1
