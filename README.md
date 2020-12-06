@@ -1,12 +1,16 @@
 [![Circle CI](https://circleci.com/gh/jshimko/meteor-launchpad/tree/master.svg?style=svg)](https://circleci.com/gh/jshimko/meteor-launchpad/tree/master)
 # Meteor Launchpad - Base Docker Image for Meteor Apps
 
+### History
+- 1.0.0 added support for arm64, amd64 via buildx --platform
+  - added support for arm64, amd64 via buildx --platform. e.g. docker buildx build --platform linux/arm64,linux/amd64 -t yourname/app .
+
 ### Build
 
 Add the following to a `Dockerfile` in the root of your app:
 
 ```Dockerfile
-FROM jshimko/meteor-launchpad:latest
+FROM maudy2u/meteor-launchpad:latest
 ```
 
 Then you can build the image with:
@@ -104,12 +108,12 @@ You can provide your [NPM auth token](http://blog.npmjs.org/post/118393368555/de
 docker build --build-arg NPM_TOKEN="<your token>" -t myorg/myapp:latest .
 ```
 
-## Development Builds
+## Development Builds - in progress..
 
 You can optionally avoid downloading Meteor every time when building regularly in development.  Add the following to your Dockerfile instead...
 
 ```Dockerfile
-FROM jshimko/meteor-launchpad:devbuild
+FROM maudy2u/meteor-launchpad:devbuild
 ```
 
 This isn't recommended for your final production build because it creates a much larger image, but it's a bit of a time saver when you're building often in development.  The first build you run will download/install Meteor and then every subsequent build will be able to skip that step and just build the app.
@@ -164,7 +168,7 @@ If you'd like to create a custom build for some reason, you can use the `build.s
 First, make any changes you want, then to create your custom build:
 
 ```sh
-# builds as jshimko/meteor-launchpad:latest
+# builds as maudy2u/meteor-launchpad:latest
 ./build.sh
 ```
 
