@@ -20,7 +20,7 @@ else
     printf "\n[-] *******************************\n\n"
     cd ~
     git clone --depth 1 https://github.com/4commerce-technologies-AG/meteor.git
-    ln -sf ./meteor/meteor /usr/bin/meteor
+    ln -sf /root/meteor/meteor /usr/bin/meteor
     meteor --version
   elif [ "$(uname -m)" == "aarch64" ] || [ "$(uname -m)" == "arm64" ]; then
     printf "\n[-] Installing Meteor 1.4-universal-beta...\n\n"

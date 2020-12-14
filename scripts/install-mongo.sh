@@ -70,24 +70,38 @@ if [ "$INSTALL_MONGO" = true ]; then
   # export MONGO_MAJOR=4.4
 
   # MONGODB
-  export MONGO_PARAMS="-C ./mongodb  --strip-components=1"
   cd ${APP_DIST_DIR}
-  printf "\n[-] Mongodb - Download and extract ${MONGO_DIST}.tgz...\n\n"
   mkdir -p ./mongodb/bin
-  curl -sL https://fastdl.mongodb.org/${MONGO_DIR}/${MONGO_DIST}.tgz \
-    -o mongodb.tgz
+  if [ "$(uname -m)" == "armv7l" ] || [ "$(uname -p)" == "armv7l" ]; then
+    cd ${APP_DIST_DIR}/mongodb/bin
+    export MONGO_PARAMS="-C .  --strip-components=1"
+    printf "\n[-] MONGO precompiled release from GitHub - mongoDB_armv7.tar...\n\n"
+    curl -sL https://github.com/maudy2u/tsx_cmd/releases/download/armv7_mongo/mongoDB_armv7.tar \
+      -o mongodb.tgz
+  else
+    export MONGO_PARAMS="-C ./mongodb  --strip-components=1"
+    printf "\n[-] Mongodb - Download and extract ${MONGO_DIST}.tgz...\n\n"
+    curl -sL https://fastdl.mongodb.org/${MONGO_DIR}/${MONGO_DIST}.tgz \
+      -o mongodb.tgz
+  fi
   tar -xf mongodb.tgz ${MONGO_PARAMS}
-  rm ${APP_DIST_DIR}/mongodb.tgz
+  rm ./mongodb.tgz
 
   # TOOLS
-  printf "\n[-] Installing MongoDB Tools ${MONGO_TOOLS}...\n\n"
   # # printf "\n[-] https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS}\n\n"
   # # printf "\n[-] https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1804-x86_64-100.2.1.tgz\n\n"
-  curl -sL https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS} \
-   -o tools.tgz
-   tar -xf tools.tgz ${MONGO_PARAMS}
-   rm ${APP_DIST_DIR}/tools.tgz
+  if [ "$(uname -m)" == "armv7l" ] || [ "$(uname -p)" == "armv7l" ]; then
+    printf "\n[-] No MongoDB Tools for armv7l...\n\n"
+  else
+    printf "\n[-] Installing MongoDB Tools ${MONGO_TOOLS}...\n\n"
+    curl -sL https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS} \
+     -o tools.tgz
+     tar -xf tools.tgz ${MONGO_PARAMS}
+     rm ${APP_DIST_DIR}/tools.tgz
+   fi
 
   mkdir -p /var/lib/mongodb
   # chown -R mongodb:mongodb /var/lib/mongodb
+
+# end MONGO IF INSTALL
 fi

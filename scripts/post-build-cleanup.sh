@@ -24,24 +24,34 @@ rm -rf /usr/share/{doc,doc-base,man,locale,zoneinfo}
 rm -rf /var/lib/{cache,log}
 
 # remove app source
-rm -rf $APP_SOURCE_DIR
+if [[ "$DEV_BUILD" = "DEV" ]]; then
+  #statements
+  printf  "\n[-] METEOR - source remains for development... \n\n"
+else
+  printf  "\n[-] METEOR - src removed... \n\n"
 
-# remove meteor
-rm -rf /usr/local/bin/meteor
-rm -rf /root/.meteor
-# needed for armfh
-rm -rf /root/meteor
+  rm -rf $APP_SOURCE_DIR
 
-# clean additional files created outside the source tree
-rm -rf /root/{.npm,.cache,.config,.cordova,.local}
+  # remove meteor
+  rm -rf /usr/local/bin/meteor
+  rm -rf /root/.meteor
+
+  # needed for armfh
+  rm -rf /root/meteor
+
+  # clean additional files created outside the source tree
+  rm -rf /root/{.npm,.cache,.config,.cordova,.local}
+
+  # remove npm
+  rm -rf /opt/nodejs/bin/npm
+  rm -rf /opt/nodejs/lib/node_modules/npm/
+
+  # remove os dependencies
+  apt-get purge -y --auto-remove apt-transport-https build-essential bsdtar bzip2 ca-certificates git python
+fi
+
 rm -rf /tmp/*
 
-# remove npm
-rm -rf /opt/nodejs/bin/npm
-rm -rf /opt/nodejs/lib/node_modules/npm/
-
-# remove os dependencies
-apt-get purge -y --auto-remove apt-transport-https build-essential bsdtar bzip2 ca-certificates git python
 apt-get -y autoremove
 apt-get -y clean
 apt-get -y autoclean

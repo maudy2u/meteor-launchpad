@@ -31,7 +31,7 @@ elif [ "$(uname -m)" == "aarch64" ]; then
   meteor build --server-only --directory $APP_DIST_DIR
 elif [ "$(uname -p)" == "armv7l" ]; then
   printf "\n[-] Building Meteor application (armv7l)...\n\n"
-  meteor build --server-only --directory $APP_DIST_DIR
+  meteor build --allow-incompatible-update  --server-only --directory $APP_DIST_DIR
 elif [ "$(uname -m)" == "i386" ]; then
   printf "\n[-] Building Meteor application (i386)...\n\n"
   meteor build --allow-superuser --server-only --directory $APP_DIST_DIR

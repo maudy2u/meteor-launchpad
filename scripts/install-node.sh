@@ -29,9 +29,15 @@ NODE_DIST=node-v${NODE_VERSION}-${NODE_OS}-${NODE_ARCH}
 
 cd ${APP_DIST_DIR}
 mkdir -p ./nodejs
-printf "\n[-] Nodejs - Download and extract ${NODE_VERSION}...\n\n"
-curl -sL http://nodejs.org/dist/v${NODE_VERSION}/${NODE_DIST}.tar.gz \
-  -o nodejs.tar.gz
+printf "\n[-] Nodejs - Download and extract ${NODE_DIST}...\n\n"
+if [ "$(uname -m)" == "armv7l" ] || [ "$(uname -p)" == "armv7l" ]; then
+  printf "\n[-] Nodejs - armv7 is fixed at v6.16.0...\n\n"
+  curl -L https://nodejs.org/dist/v6.16.0/node-v6.16.0-linux-armv7l.tar.gz \
+    -o nodejs.tar.gz
+else
+  curl -L http://nodejs.org/dist/v${NODE_VERSION}/${NODE_DIST}.tar.gz \
+    -o nodejs.tar.gz
+fi
 # tar xzf ${NODE_DIST}.tar.gz
 tar -xf nodejs.tar.gz -C ./nodejs --strip-components=1
 rm ${APP_DIST_DIR}/nodejs.tar.gz
