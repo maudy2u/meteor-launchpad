@@ -1,4 +1,5 @@
 # FROM node:4
+# FROM ubuntu:xenial
 FROM ubuntu:bionic
 MAINTAINER Stephen <abordercollie@gmail.com>
 
@@ -74,8 +75,6 @@ EXPOSE 3000
 
 # CMD needs bundle directoy...
 WORKDIR $APP_BUNDLE_DIR
-
-VOLUME ["/var/tsx_cmd", "/var/log/tsx_cmd"]
 
 # start the app
 ENTRYPOINT ["./entrypoint.sh"]

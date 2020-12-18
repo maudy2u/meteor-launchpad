@@ -31,56 +31,35 @@ cd $APP_SOURCE_DIR
 
 if [ "$(uname -m)" == "x86_64" ] && [ "$METEOR_x86_64" ]; then
   printf "\n[-] Running meteor add $METEOR_x86_64 installs in $APP_SOURCE_DIR...\n\n"
-  meteor add $METEOR_x86_64
+  meteor --allow-incompatible-update add $METEOR_x86_64
 elif [ "$(uname -m)" == "aarch64" ] && [ "$METEOR_ARM64" ]; then
   printf "\n[-] Running meteor add $METEOR_ARM64 installs in $APP_SOURCE_DIR...\n\n"
-  meteor add $METEOR_ARM64
+  meteor --allow-incompatible-update add $METEOR_ARM64
 elif [ "$(uname -p)" == "armv7l" ] && [ "$METEOR_ARM" ]; then
   printf "\n[-] Running meteor add $METEOR_ARM installs in $APP_SOURCE_DIR...\n\n"
   meteor --allow-incompatible-update add $METEOR_ARM
 elif [ "$(uname -m)" == "i386" ] && [ "$METEOR_x86_64" ]; then
   printf "\n[-] Running meteor add $METEOR_x86_64 installs in $APP_SOURCE_DIR...\n\n"
-  meteor add $METEOR_x86_64
+  meteor --allow-incompatible-update add $METEOR_x86_64
 fi
 
-
-if [ "$(uname -p)" == "armv7l" ]; then
-  #meteor remove standard-minifier-css
-  if [ "$METEOR_ADD" ]; then
-    printf "\n[-] Running meteor add install in $APP_SOURCE_DIR..."
-    printf "[-] Install $METEOR_ADD \n\n"
-    meteor --allow-incompatible-update  add $METEOR_ADD
-  fi
-  if [ "$METEOR_NPM_SAVE_DEV" ]; then
-    printf "\n[-] Running meteor npm install --save-dev in $APP_SOURCE_DIR..."
-    printf "[-] Install $METEOR_NPM_SAVE_DEV \n\n"
-    meteor npm install --save-dev $METEOR_NPM_SAVE_DEV
-  fi
-  if [ "$METEOR_NPM_SAVE" ]; then
-    printf "\n[-] Running meteor npm install --save in $APP_SOURCE_DIR..."
-    printf "[-] Install $METEOR_NPM_SAVE \n\n"
-    meteor npm install --save $METEOR_NPM_SAVE
-  fi
-  printf "\n[-] Running meteor npm install in app directory...\n\n"
-  meteor npm install
-else
-  #meteor remove standard-minifier-css
-  if [ "$METEOR_ADD" ]; then
-    printf "\n[-] Running meteor add install in $APP_SOURCE_DIR...\n\n"
-    meteor add $METEOR_ADD
-  fi
-  if [ "$METEOR_NPM_SAVE_DEV" ]; then
-    printf "\n[-] Running meteor npm install --save-dev in $APP_SOURCE_DIR...\n\n"
-    meteor npm install --save-dev $METEOR_NPM_SAVE_DEV
-  fi
-  if [ "$METEOR_NPM_SAVE" ]; then
-    printf "\n[-] Running meteor npm install --save in $APP_SOURCE_DIR...\n\n"
-    meteor npm install --save $METEOR_NPM_SAVE
-  fi
-  printf "\n[-] Running meteor npm install in app directory...\n\n"
-  meteor npm install
+if [ "$METEOR_ADD" ]; then
+  printf "\n[-] Running meteor add install in $APP_SOURCE_DIR..."
+  printf "\n[-] Install $METEOR_ADD \n\n"
+  meteor $ALLOW_INCOMPATIBLE_UPDATE  add $METEOR_ADD
+fi
+if [ "$METEOR_NPM_SAVE_DEV" ]; then
+  printf "\n[-] Running meteor npm install --save-dev in $APP_SOURCE_DIR..."
+  printf "\n[-] Install $METEOR_NPM_SAVE_DEV \n\n"
+  meteor npm install --save-dev $METEOR_NPM_SAVE_DEV
+fi
+if [ "$METEOR_NPM_SAVE" ]; then
+  printf "\n[-] Running meteor npm install --save in $APP_SOURCE_DIR..."
+  printf "\n[-] Install $METEOR_NPM_SAVE \n\n"
+  meteor npm install --save $METEOR_NPM_SAVE
 fi
 
+printf "\n[-] Running meteor npm install in app directory...\n\n"
 
 if [ "$(uname -m)" == "aarch64" ] || [ "$(uname -m)" == "arm64" ]; then
   printf "\n[-] aarch64 patching meteor's mongod ...\n\n"

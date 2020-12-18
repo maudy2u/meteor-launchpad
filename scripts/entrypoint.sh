@@ -38,5 +38,6 @@ fi
 
 # Start app
 cd $APP_BUNDLE_DIR
+
 echo "=> Starting app on port $PORT..."
 exec "$@"

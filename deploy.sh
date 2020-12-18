@@ -2,18 +2,31 @@
 
 set -e
 
-# Example usage:
-# deploy.sh jshimko/meteor-launchpad v1.0.0
+if [ $# -lt 2 ]
+  then
+    echo ""
+    echo " *******************************"
+    echo ": You need to provide two parameters to build"
+    echo ": Example usage:"
+    echo ": ./deploy.sh maudy2u/meteor-launchpad v1.0.0"
+    echo " *******************************"
+    echo ""
+    exit 1
+fi
 
-IMAGE_NAME=$1 # jshimko/meteor-launchpad
+IMAGE_NAME=$1 # maudy2u/meteor-launchpad
 VERSION=$2    # v1.0.0
 
-# create versioned tags
-docker tag $IMAGE_NAME:devbuild $IMAGE_NAME:$VERSION-devbuild
-docker tag $IMAGE_NAME:latest $IMAGE_NAME:$VERSION
+printf "\n[-] Create Buildx context...\n\n"
+docker buildx create --name myBuilder_$VERSION
+docker buildx use myBuilder_$VERSION
 
-# push the builds
-docker push $IMAGE_NAME:$VERSION-devbuild
-docker push $IMAGE_NAME:devbuild
-docker push $IMAGE_NAME:$VERSION
-docker push $IMAGE_NAME:latest
+printf "\n[-] Create Buildx context...\n\n"
+docker buildx build --no-cache --platform linux/amd64,linux/arm/v7,linux/arm64 -t $IMAGE_NAME:latest -t $IMAGE_NAME:$VERSION --push .
+
+# create versioned tags
+#docker buildx build  --no-cache --platform linux/amd64,linux/arm/v7,linux/arm64 -t $IMAGE_NAME:devbuild .
+#docker tag $IMAGE_NAME:devbuild $IMAGE_NAME:$VERSION-devbuild
+
+printf "\n[-] Remove Buildx context...\n\n"
+docker buildx rm myBuilder_$VERSION

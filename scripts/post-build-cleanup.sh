@@ -1,19 +1,26 @@
 #!/bin/bash
 set -e
 
-# run npm install in bundle
-printf "\n[-] Running npm installing FIBERS in the server bundle...\n\n"
+if [ -f $APP_SOURCE_DIR/launchpad.conf ]; then
+  source <(grep DEV_BUILD $APP_SOURCE_DIR/launchpad.conf)
+fi
 
-export PATH=${APP_DIST_DIR}/mongodb/bin:${APP_DIST_DIR}/nodejs/bin:$PATH
+if [ -d "$APP_BUNDLE_DIR/programs/server" ]; then
 
-cd $APP_BUNDLE_DIR/programs/server
-printf  "\n[-] METEOR - fix for fibers deploy... \n\n"
-npm uninstall fibers
-npm install fibers
+  # run npm install in bundle
+  printf "\n[-] Running npm installing FIBERS in the server bundle...\n\n"
 
-# printf "\n[-] TSX_CMD - reinstall npm...\n\n"
-# npm install amdefine ansi-styles chalk escape-string-regexp has-ansi promise source-map strip-ansi type-of ansi-regex asap eachline meteor-promise semver source-map-support supports-color underscore
+  export PATH=${APP_DIST_DIR}/mongodb/bin:${APP_DIST_DIR}/nodejs/bin:$PATH
 
+  cd $APP_BUNDLE_DIR/programs/server
+  printf  "\n[-] METEOR - fix for fibers deploy... \n\n"
+  npm uninstall fibers
+  npm install fibers
+
+  printf "\n[-] TSX_CMD - npm install...\n\n"
+  npm install amdefine ansi-styles chalk escape-string-regexp has-ansi promise source-map strip-ansi type-of ansi-regex asap eachline meteor-promise semver source-map-support supports-color underscore
+
+fi
 # get out of the src dir, so we can delete it
 cd $APP_BUNDLE_DIR
 
@@ -24,10 +31,8 @@ rm -rf /usr/share/{doc,doc-base,man,locale,zoneinfo}
 rm -rf /var/lib/{cache,log}
 
 # remove app source
-if [[ "$DEV_BUILD" = "DEV" ]]; then
-  #statements
-  printf  "\n[-] METEOR - source remains for development... \n\n"
-else
+if [ -z "${DEV_BUILD}" ]; then
+
   printf  "\n[-] METEOR - src removed... \n\n"
 
   rm -rf $APP_SOURCE_DIR

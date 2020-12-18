@@ -1,13 +1,10 @@
 FROM ubuntu:bionic
 
-MAINTAINER Jeremy Shimko <jeremy.shimko@gmail.com>
+MAINTAINER Stephen <abordercollie@gmail.com>
 
 RUN groupadd -r node && useradd -m -g node node
 
 ENV DEV_BUILD true
-
-# Gosu
-# ENV GOSU_VERSION 1.10
 
 # MongoDB
 ENV MONGO_VERSION 4.4.0
@@ -36,14 +33,12 @@ ONBUILD ENV NODE_VERSION ${NODE_VERSION:-8.9.0}
 ONBUILD ARG INSTALL_MONGO
 ONBUILD ENV INSTALL_MONGO ${INSTALL_MONGO:-true}
 
-ONBUILD ARG INSTALL_PHANTOMJS
-ONBUILD ENV INSTALL_PHANTOMJS ${INSTALL_PHANTOMJS:-true}
 # optionally custom apt dependencies at app build time
 ONBUILD RUN if [ "$APT_GET_INSTALL" ]; then apt-get update && apt-get install -y $APT_GET_INSTALL; fi
 
 # optionally install Mongo or Phantom at app build time
-ONBUILD RUN bash $BUILD_SCRIPTS_DIR/install-phantom.sh
 ONBUILD RUN bash $BUILD_SCRIPTS_DIR/install-mongo.sh
+
 # Node flags for the Meteor build tool
 ONBUILD ARG TOOL_NODE_FLAGS
 ONBUILD ENV TOOL_NODE_FLAGS $TOOL_NODE_FLAGS
