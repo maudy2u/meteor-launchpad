@@ -1,10 +1,6 @@
 #!/bin/bash
 set -e
 
-if [ -f $APP_SOURCE_DIR/launchpad.conf ]; then
-  source <(grep DEV_BUILD $APP_SOURCE_DIR/launchpad.conf)
-fi
-
 if [ -d "$APP_BUNDLE_DIR/programs/server" ]; then
 
   # run npm install in bundle

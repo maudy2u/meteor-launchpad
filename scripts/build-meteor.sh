@@ -30,6 +30,3 @@ fi
 printf "\n[-] Building Meteor application...\n\n"
 cd $APP_SOURCE_DIR
 meteor build $ALLOW_INCOMPATIABLE_UPDATE --server-only --directory ${APP_DIST_DIR}
-
-# put the entrypoint script in WORKDIR
-cp $BUILD_SCRIPTS_DIR/entrypoint.sh $APP_BUNDLE_DIR/entrypoint.sh
