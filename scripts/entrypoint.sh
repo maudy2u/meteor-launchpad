@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+
 if [ -f $APP_SOURCE_DIR/launchpad.conf ]; then
   source <(grep MONGO_PARAM $APP_SOURCE_DIR/launchpad.conf)
 fi
