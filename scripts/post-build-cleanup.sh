@@ -19,6 +19,7 @@ if [ -d "$APP_BUNDLE_DIR/programs/server" ]; then
 fi
 # get out of the src dir, so we can delete it
 cd $APP_BUNDLE_DIR
+cp $BUILD_SCRIPTS_DIR/entrypoint.sh $APP_BUNDLE_DIR/entrypoint.sh
 
 # Clean out docs
 rm -rf /usr/share/{doc,doc-base,man,locale,zoneinfo}
@@ -26,12 +27,14 @@ rm -rf /usr/share/{doc,doc-base,man,locale,zoneinfo}
 # Clean out package management dirs
 rm -rf /var/lib/{cache,log}
 
+printf  "\n[-] METEOR - src removed... \n\n"
+
+rm -rf $APP_SOURCE_DIR
+
 # remove app source
-if [ -z "${DEV_BUILD}" ]; then
+if [ ! -z "${DEV_BUILD}" ]; then
 
-  printf  "\n[-] METEOR - src removed... \n\n"
-
-  rm -rf $APP_SOURCE_DIR
+  printf  "\n[-] METEOR - removed... \n\n"
 
   # remove meteor
   rm -rf /usr/local/bin/meteor
@@ -44,8 +47,8 @@ if [ -z "${DEV_BUILD}" ]; then
   rm -rf /root/{.npm,.cache,.config,.cordova,.local}
 
   # remove npm
-  rm -rf /opt/nodejs/bin/npm
-  rm -rf /opt/nodejs/lib/node_modules/npm/
+  # rm -rf /opt/nodejs/bin/npm
+  # rm -rf /opt/nodejs/lib/node_modules/npm/
 
   # remove os dependencies
   apt-get purge -y --auto-remove apt-transport-https build-essential bsdtar bzip2 ca-certificates git python

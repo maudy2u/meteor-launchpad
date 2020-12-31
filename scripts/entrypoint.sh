@@ -1,6 +1,9 @@
 #!/bin/bash
 
 set -e
+if [ -f $APP_SOURCE_DIR/launchpad.conf ]; then
+  source <(grep MONGO_PARAM $APP_SOURCE_DIR/launchpad.conf)
+fi
 
 # try to start local MongoDB if no external MONGO_URL was set
 if [[ "${MONGO_URL}" == *"127.0.0.1"* ]] || [[ "${MONGO_URL}" == *"localhost"* ]]; then
@@ -11,9 +14,9 @@ if [[ "${MONGO_URL}" == *"127.0.0.1"* ]] || [[ "${MONGO_URL}" == *"localhost"* ]
     #exec gosu mongodb mongod --storageEngine=wiredTiger > /dev/null 2>&1 &
     echo " *******************************"
     echo ""
-    mkdir -p /opt/meteor/dist/data/db
-    mkdir -p /opt/meteor/dist/log/mongod
-    mongod --dbpath /opt/meteor/dist/data/db --logpath /opt/meteor/dist/log/mongod/mongod.log --journal &
+    mkdir -p $APP_DIST_DIR/data/db
+    mkdir -p $APP_DIST_DIR/log/mongod
+    mongod $MONGO_PARAM --dbpath $APP_DIST_DIR/data/db --logpath $APP_DIST_DIR/log/mongod/mongod.log --journal &
   else
     echo "ERROR: Mongo not installed inside the container."
     echo "Rebuild with INSTALL_MONGO=true in your launchpad.conf or supply a MONGO_URL environment variable."
@@ -27,9 +30,9 @@ if [[ $STARTUP_DELAY ]]; then
   sleep $STARTUP_DELAY
 fi
 
-# if [ "${1:0:1}" = '-' ]; then
-# 	set -- node "$@"
-# fi
+if [ "${1:0:1}" = '-' ]; then
+	set -- node "$@"
+fi
 
 # # allow the container to be started with `--user`
 # if [ "$1" = "node" -a "$(id -u)" = "0" ]; then

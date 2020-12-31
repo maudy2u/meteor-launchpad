@@ -14,19 +14,22 @@ if [ $# -lt 2 ]
     exit 1
 fi
 
-IMAGE_NAME=$1 # maudy2u/meteor-launchpad
-VERSION=$2    # v1.0.0
+# maudy2u/meteor-launchpad
+IMAGE_NAME=$1
+# v1.0.0
+VERSION=$2
 
 printf "\n[-] Create Buildx context...\n\n"
 docker buildx create --name myBuilder_$VERSION
 docker buildx use myBuilder_$VERSION
 
 printf "\n[-] Create Buildx context...\n\n"
-docker buildx build --no-cache --platform linux/amd64,linux/arm/v7,linux/arm64 -t $IMAGE_NAME:latest -t $IMAGE_NAME:$VERSION --push .
+#docker buildx build --no-cache --platform linux/amd64,linux/arm/v7,linux/arm64 -t $IMAGE_NAME:latest -t $IMAGE_NAME:$VERSION --push .
+docker buildx build --no-cache --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:latest -t $IMAGE_NAME:$VERSION --push .
 
 # create versioned tags
 #docker buildx build  --no-cache --platform linux/amd64,linux/arm/v7,linux/arm64 -t $IMAGE_NAME:devbuild .
-#docker tag $IMAGE_NAME:devbuild $IMAGE_NAME:$VERSION-devbuild
+docker buildx build  --no-cache --platform linux/amd64,linux/arm64 -t $IMAGE_NAME:devbuild -t $IMAGE_NAME:devbuild_$VERSION --push .
 
 printf "\n[-] Remove Buildx context...\n\n"
 docker buildx rm myBuilder_$VERSION

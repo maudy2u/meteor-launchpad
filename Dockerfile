@@ -59,8 +59,6 @@ ONBUILD RUN if [ "$APT_GET_INSTALL" ]; then apt-get update && apt-get install -y
 # copy the app to the container
 ONBUILD COPY . $APP_SOURCE_DIR
 
-ONBUILD RUN mkdir -p $APP_BUNDLE_DIR; cp $BUILD_SCRIPTS_DIR/entrypoint.sh $APP_BUNDLE_DIR/entrypoint.sh
-
 # install all dependencies, build app, clean up
 ONBUILD RUN cd $APP_SOURCE_DIR && \
   $BUILD_SCRIPTS_DIR/install-deps.sh && \
