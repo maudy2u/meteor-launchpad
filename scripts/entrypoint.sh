@@ -10,24 +10,23 @@ fi
 if [[ "${MONGO_URL}" == *"127.0.0.1"* ]] || [[ "${MONGO_URL}" == *"localhost"* ]]; then
   #if [ -x "$(command -v mongod)" ]; then
   if hash mongod 2>/dev/null; then
-    echo " *******************************"
-    echo "\n[-] External MONGO_URL not found. Starting local MongoDB...\n\n"
+    printf "\n[-] *******************************\n\n"
+    printf "\n[-] Starting mongod...\n\n"
+    printf "\n[-] *******************************\n\n"
     #exec gosu mongodb mongod --storageEngine=wiredTiger > /dev/null 2>&1 &
-    echo " *******************************"
-    echo ""
     mkdir -p $APP_DIST_DIR/data/db
     mkdir -p $APP_DIST_DIR/log/mongod
     mongod $MONGO_PARAM --dbpath $APP_DIST_DIR/data/db --logpath $APP_DIST_DIR/log/mongod/mongod.log --journal &
   else
-    echo "ERROR: Mongo not installed inside the container."
-    echo "Rebuild with INSTALL_MONGO=true in your launchpad.conf or supply a MONGO_URL environment variable."
+    printf "\n[!!!] ERROR: Mongo not installed inside the container.n\n"
+    printf "\n[!!!] Rebuild with INSTALL_MONGO=true in your launchpad.conf or supply a MONGO_URL environment variable.n\n"
     exit 1
   fi
 fi
 
 # Set a delay to wait to start the Node process
-if [[ $STARTUP_DELAY ]]; then
-  echo "Delaying startup for $STARTUP_DELAY seconds..."
+if [[ ! -z $STARTUP_DELAY ]]; then
+  printf "\n[-] Delaying startup for $STARTUP_DELAY seconds...n\n"
   sleep $STARTUP_DELAY
 fi
 

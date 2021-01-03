@@ -69,3 +69,7 @@ if [ "$(uname -m)" == "aarch64" ] || [ "$(uname -m)" == "arm64" ]; then
   ln -sf /opt/meteor/dist/mongodb/bin/mongod /root/meteor/dev_bundle/mongodb/bin/mongod
   ln -sf /opt/meteor/dist/mongodb/bin/mongo /root/meteor/dev_bundle/mongodb/bin/mongo
 fi
+
+# confirm meteor configured
+chk=$APP_SOURCE_DIR/configured
+touch $chk
