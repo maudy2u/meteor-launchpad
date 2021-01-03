@@ -31,9 +31,9 @@ fi
 export METEOR_ALLOW_SUPERUSER=true
 export METEOR_DISABLE_OPTIMISTIC_CACHING=1
 
-# if [ "$(uname -p)" == "armv7l" ]; then
+if [ "$(uname -p)" == "armv7l" ]; then
   export ALLOW_INCOMPATIABLE_UPDATE="--allow-incompatible-update"
-# fi
+fi
 
 printf "\n[-] Building Meteor application...\n\n"
 cd $APP_SOURCE_DIR

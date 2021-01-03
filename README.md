@@ -2,7 +2,7 @@
 # Meteor Launchpad - Base Docker Image for Meteor Apps
 
 ### History
-- 1.0.0 added support for arm64, amd64 via buildx --platform
+- 1.2.0 added support for arm64, amd64 via buildx --platform
   - added support for arm64, amd64 via buildx --platform. e.g. docker buildx build --platform linux/arm64,linux/amd64 -t yourname/app .
 
 ### Build
@@ -46,7 +46,7 @@ docker run -d \
 
 #### Delay startup
 
-If you need to force a delay in the startup of the Node process (for example, to wait for a database to be ready), you can set the `STARTUP_DELAY` environment variable to any number of seconds.  For example, to delay starting the app by 10 seconds, you would do this:
+You can need to force a delay in the startup of the Node process (for example, to wait for a database to be ready), you can set the `STARTUP_DELAY` environment variable to any number of seconds.  For example, to delay starting the app by 10 seconds, you would do this:
 
 ```sh
 docker run -d \
@@ -59,9 +59,14 @@ docker run -d \
 
 ### Build Options
 
-Meteor Launchpad supports setting custom build options in one of two ways.  You can either create a launchpad.conf config file in the root of your app or you can use [Docker build args](https://docs.docker.com/engine/reference/builder/#arg).  The currently supported options are to install PhantomJS, GraphicsMagick, MongoDB, or any list of `apt-get` dependencies (Meteor Launchpad is built on `debian:jesse`).  
+Meteor Launchpad supports setting custom build options in one of two ways.  You can either create a launchpad.conf config file in the root of your app or you can use [Docker build args](https://docs.docker.com/engine/reference/builder/#arg).  The currently supported options are to install MongoDB, or any list of `apt-get` dependencies (Meteor Launchpad is built on `debian:jesse`).  
 
 If you choose to install Mongo, you can use it by _not_ supplying a `MONGO_URL` when you run your app container.  The startup script will then start Mongo inside the container and tell your app to use it.  If you _do_ supply a `MONGO_URL`, Mongo will not be started inside the container and the external database will be used instead.
+
+The Mongo port and be exposed if needed using the following, where `28017` is your desired port:
+
+`-p 28017:27017 \
+`
 
 Note that having Mongo in the same container as your app is just for convenience while testing/developing.  In production, you should use a separate Mongo deployment or at least a separate Mongo container.
 
@@ -113,10 +118,22 @@ docker build --build-arg NPM_TOKEN="<your token>" -t myorg/myapp:latest .
 You can optionally avoid downloading Meteor every time when building regularly in development.  Add the following to your Dockerfile instead...
 
 ```Dockerfile
-FROM maudy2u/meteor-launchpad:devbuild
+FROM maudy2u/meteor-launchpad:builder
 ```
 
-This isn't recommended for your final production build because it creates a much larger image, but it's a bit of a time saver when you're building often in development.  The first build you run will download/install Meteor and then every subsequent build will be able to skip that step and just build the app.
+This isn't recommended for your final production build because it creates a much larger image, but it's a bit of a time saver when you're building often in development.  This image has keeps the build scripts in `/opt/build/scripts` and has Meteor already installed. You can attach your source, such as using a volume, and then run `update-bundle.sh`.
+
+### Meteor additions and Multiple platforms - amd64, arm64
+
+The build scripts in `/opt/build/scripts` allow for different dependencies and versions depending
+on the platform you are using These can be configured if needed in the `launchpad.conf`
+
+- `METEOR_ADD` - used for generic packages to add to all platforms
+- `METEOR_NPM_SAVE_DEV` - for specific NPM develop packages
+- `METEOR_NPM_SAVE` - for specific NPM production packages
+- `METEOR_ARM64` - for ARM64 specific packages
+- `METEOR_ARM` - for ARM64 specific packages
+- `METEOR_x86_64` - for ARM64 specific packages
 
 ## Meteor.settings
 
@@ -131,45 +148,6 @@ docker run -d \
   -e METEOR_SETTINGS="$(cat settings.json)" \
   -p 80:3000 \
   yourname/app
-```
-
-## Docker Compose
-
-Add a `docker-compose.yml` to the root of your project with the following content and edit the app image name to match your build name.  Everything else should work as-is.
-
-```yaml
-# docker-compose.yml
-
-app:
-  image: yourname/app
-  ports:
-    - "80:3000"
-  links:
-    - mongo
-  environment:
-    - ROOT_URL=http://example.com
-    - MONGO_URL=mongodb://mongo:27017/meteor
-
-mongo:
-  image: mongo:latest
-  command: mongod --storageEngine=wiredTiger
-```
-
-And then start the app and database containers with...
-
-```sh
-docker-compose up -d
-```
-
-## Custom Builds of Meteor Launchpad
-
-If you'd like to create a custom build for some reason, you can use the `build.sh` script in the root of the project to run all of the necessary commands.
-
-First, make any changes you want, then to create your custom build:
-
-```sh
-# builds as maudy2u/meteor-launchpad:latest
-./build.sh
 ```
 
 ## License

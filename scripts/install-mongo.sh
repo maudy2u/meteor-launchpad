@@ -53,7 +53,7 @@ if [ "$INSTALL_MONGO" = true ]; then
   if [ "$(uname -m)" == "armv7l" ] || [ "$(uname -p)" == "armv7l" ]; then
     cd ${APP_DIST_DIR}/mongodb/bin
     export MONGO_PARAMS="-C .  --strip-components=1"
-    printf "\n[-] MONGO precompiled release from GitHub - mongoDB_armv7.tar...\n\n"
+    printf "\n[-] MONGO precompiled release from maudy2u @ GitHub - mongoDB_armv7.tar...\n\n"
     curl -sL https://github.com/maudy2u/tsx_cmd/releases/download/armv7_mongo/mongoDB_armv7.tar \
       -o mongodb.tgz
   else
