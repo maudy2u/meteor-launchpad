@@ -1,13 +1,15 @@
 # FROM node:4
+# FROM busybox
 # FROM ubuntu:xenial
 FROM ubuntu:bionic
+
 MAINTAINER Stephen <abordercollie@gmail.com>
 
 ARG devBuild
 
 ENV DEV_BUILD=${devBuild:-""}
 
-RUN groupadd -r node && useradd -m -g node node
+# RUN groupadd -r node && useradd -m -g node node
 
 # Meteor
 ENV METEOR_DISABLE_OPTIMISTIC_CACHING=1

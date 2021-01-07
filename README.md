@@ -1,4 +1,3 @@
-[![Circle CI](https://circleci.com/gh/jshimko/meteor-launchpad/tree/master.svg?style=svg)](https://circleci.com/gh/jshimko/meteor-launchpad/tree/master)
 # Meteor Launchpad - Base Docker Image for Meteor Apps
 
 ### History
@@ -89,8 +88,6 @@ NODE_VERSION=8.9.0
 
 # Installs the latest version of each (default: all false)
 INSTALL_MONGO=true
-INSTALL_PHANTOMJS=false
-INSTALL_GRAPHICSMAGICK=false
 ```
 
 **Option #2 - Docker Build Args**
