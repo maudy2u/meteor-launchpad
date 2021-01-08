@@ -1,6 +1,3 @@
-# FROM node:4
-# FROM busybox
-# FROM ubuntu:xenial
 FROM ubuntu:bionic
 
 MAINTAINER Stephen <abordercollie@gmail.com>
@@ -66,7 +63,7 @@ ONBUILD RUN cd $APP_SOURCE_DIR && \
   $BUILD_SCRIPTS_DIR/install-deps.sh && \
   $BUILD_SCRIPTS_DIR/install-mongo.sh && \
   $BUILD_SCRIPTS_DIR/install-node.sh && \
-  $BUILD_SCRIPTS_DIR/install-meteor.sh && \
+  $BUILD_SCRIPTS_DIR/install-meteor.sh &&\
   $BUILD_SCRIPTS_DIR/install-meteor-deps.sh && \
   $BUILD_SCRIPTS_DIR/build-meteor.sh && \
   $BUILD_SCRIPTS_DIR/post-build-cleanup.sh && \
@@ -80,6 +77,7 @@ ENV PORT 3000
 EXPOSE 3000
 
 # CMD needs bundle directoy...
+#
 WORKDIR $APP_BUNDLE_DIR
 
 # start the app

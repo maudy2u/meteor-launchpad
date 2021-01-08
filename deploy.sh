@@ -26,8 +26,5 @@ docker buildx use myBuilder_$VERSION
 printf "\n[-] Create Buildx context...\n\n"
 docker buildx build --no-cache --platform linux/amd64,linux/arm64,linux/arm/v7 -t $IMAGE_NAME:latest -t $IMAGE_NAME:$VERSION --push .
 
-# create versioned tags
-docker buildx build  --no-cache --platform linux/amd64,linux/arm64,linux/arm/v7 -t $IMAGE_NAME:devbuild -t $IMAGE_NAME:devbuild_$VERSION --push .
-
 printf "\n[-] Remove Buildx context...\n\n"
 docker buildx rm myBuilder_$VERSION

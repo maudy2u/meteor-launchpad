@@ -6,6 +6,11 @@ if [ -f $APP_SOURCE_DIR/launchpad.conf ]; then
   source <(grep MONGO_PARAM $APP_SOURCE_DIR/launchpad.conf)
 fi
 
+# remove any mongo params for armv7
+if [ "$(uname -m)" == "armv7l" ]; then
+    MONGO_PARAM=''
+fi
+
 # try to start local MongoDB if no external MONGO_URL was set
 if [[ "${MONGO_URL}" == *"127.0.0.1"* ]] || [[ "${MONGO_URL}" == *"localhost"* ]]; then
   #if [ -x "$(command -v mongod)" ]; then
